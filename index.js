@@ -50,6 +50,20 @@ async function createParty({ name, description, date, location }) {
   }
 }
 
+/** Clears selectedParty state and deletes the party via the API */
+async function removeParty(id) {
+  try {
+    const response = await fetch(API + "/events/" + id, {
+      method: "DELETE",
+    });
+
+    selectedParty = null;
+    await getParties();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 /** Updates state with all RSVPs from the API */
 async function getRsvps() {
   try {
@@ -119,8 +133,13 @@ function SelectedParty() {
     <address>${selectedParty.location}</address>
     <p>${selectedParty.description}</p>
     <GuestList></GuestList>
+    <button>Delete party</button>
   `;
   $party.querySelector("GuestList").replaceWith(GuestList());
+
+  $party.querySelector("button").addEventListener("click", () => {
+    removeParty(selectedParty.id);
+  });
 
   return $party;
 }
