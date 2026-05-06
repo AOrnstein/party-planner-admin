@@ -34,6 +34,22 @@ async function getParty(id) {
   }
 }
 
+/** Create a new party via the API */
+async function createParty({ name, description, date, location }) {
+  try {
+    const response = await fetch(API + "/events/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, description, date, location }),
+    });
+    const result = await response.json();
+
+    await getParties();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 /** Updates state with all RSVPs from the API */
 async function getRsvps() {
   try {
@@ -129,7 +145,7 @@ function GuestList() {
   return $ul;
 }
 
-/** Detailed information about the selected party */
+/** Form to create a new party */
 function PartyMaker() {
   const $form = document.createElement("form");
   $form.innerHTML = `
@@ -161,6 +177,8 @@ function PartyMaker() {
     const location = formData.get("location");
 
     const date = new Date(dateFromForm).toISOString();
+
+    createParty({ name, description, date, location });
   });
 
   return $form;
