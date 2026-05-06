@@ -190,14 +190,15 @@ function PartyMaker() {
     event.preventDefault();
     const formData = new FormData($form);
 
-    const name = formData.get("name");
-    const description = formData.get("description");
     const dateFromForm = formData.get("date");
-    const location = formData.get("location");
+    const isoDate = new Date(dateFromForm).toISOString();
 
-    const date = new Date(dateFromForm).toISOString();
-
-    createParty({ name, description, date, location });
+    createParty({
+      name: formData.get("name"),
+      description: formData.get("description"),
+      date: isoDate,
+      location: formData.get("location"),
+    });
   });
 
   return $form;
