@@ -1,6 +1,7 @@
 // === Constants ===
 const BASE = "https://fsa-crud-2aa9294fe819.herokuapp.com/api";
-const COHORT = ""; // Make sure to change this!
+// const COHORT = "/2604-FTB-ET-WEB-FP-Adam";
+const COHORT = "/2604-Adam";
 const API = BASE + COHORT;
 
 // === State ===
@@ -113,8 +114,8 @@ function GuestList() {
   const $ul = document.createElement("ul");
   const guestsAtParty = guests.filter((guest) =>
     rsvps.find(
-      (rsvp) => rsvp.guestId === guest.id && rsvp.eventId === selectedParty.id
-    )
+      (rsvp) => rsvp.guestId === guest.id && rsvp.eventId === selectedParty.id,
+    ),
   );
 
   // Simple components can also be created anonymously:
@@ -128,6 +129,43 @@ function GuestList() {
   return $ul;
 }
 
+/** Detailed information about the selected party */
+function PartyMaker() {
+  const $form = document.createElement("form");
+  $form.innerHTML = `
+    <label>
+      Name
+      <input name="name" required />
+    </label>
+    <label>
+      Description
+      <input name="description" required />
+    </label>
+    <label>
+      Date
+      <input name="date" type="date" required />
+    </label>
+    <label>
+      Location
+      <input name="location" required />
+    </label>
+    <button>Add party</button>
+  `;
+  $form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData($form);
+
+    const name = formData.get("name");
+    const description = formData.get("description");
+    const dateFromForm = formData.get("date");
+    const location = formData.get("location");
+
+    const date = new Date(dateFromForm).toISOString();
+  });
+
+  return $form;
+}
+
 // === Render ===
 function render() {
   const $app = document.querySelector("#app");
@@ -137,6 +175,8 @@ function render() {
       <section>
         <h2>Upcoming Parties</h2>
         <PartyList></PartyList>
+        <h3>Add a new party</h3>
+        <PartyMaker></PartyMaker>
       </section>
       <section id="selected">
         <h2>Party Details</h2>
@@ -147,6 +187,7 @@ function render() {
 
   $app.querySelector("PartyList").replaceWith(PartyList());
   $app.querySelector("SelectedParty").replaceWith(SelectedParty());
+  $app.querySelector("PartyMaker").replaceWith(PartyMaker());
 }
 
 async function init() {
